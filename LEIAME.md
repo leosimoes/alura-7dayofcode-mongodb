@@ -47,6 +47,56 @@ app.listen(port, () => {
 ![Image-05-MongoDbCompass](/images/Image-05-MongoDbCompass.jpg)
 
 
+## Dia 2
+
+9. Criar a base de dados `my_marvel_database` no MongoDB Compass:
+
+![Image-06-MongoDbCompass-CreateDatabse](/images/Image-06-MongoDbCompass-CreateDatabse.jpg)
+
+10. Adicionar os dados manualmente no banco:
+- Gerar dados com campos "real_name", "nickname", "description" e salvá-los em **data/avengers.json**;
+- Importar dados do arquivo para a base de dados no MongoDB Compass:
+
+![Image-07-MongoDbCompass-ImportJson](/images/Image-07-MongoDbCompass-ImportJson.jpg)
+
+11. Instalar o mongoose no projeto:
+- No terminal, digite `npm install mongoose`;
+- Adicione o código em **index.js**:
+```javascript
+const connection_url = 'mongodb://localhost:27017/my_marvel_database';
+
+mongoose.connect(connection_url);
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Error connecting to MongoDB:'));
+db.once('open', () => {
+    console.log('Successful connection to MongoDB!');
+});
+
+const Character = mongoose.model('characters', {
+    real_name: String,
+    nickname: String,
+    description: String
+});
+
+app.get('/avengers/', async (req, res) => {
+    try {
+        const avengers = await Character.find();
+        res.json(avengers);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao obter personagens' });
+    }
+});
+```
+
+12. Testar a aplicação
+- Executar a aplicação pelo terminal com `npm start`;
+- Acessar `http://localhost:3000/avengers` pelo navegador;
+
+![Image-08-AvengersRouteJSON](/images/Image-08-AvengersRouteJSON.jpg)
+
+
 ## Referências
 
 Alura - 7 Days Of Code - MongoDB: https://7daysofcode.io/matricula/mongodb

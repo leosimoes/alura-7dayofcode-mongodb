@@ -1,0 +1,52 @@
+[
+  {
+    "real_name": "Tony Stark",
+    "nickname": "Iron Man",
+    "description": "Genius, billionaire, playboy, philanthropist, and armored superhero."
+  },
+  {
+    "real_name": "Steve Rogers",
+    "nickname": "Captain America",
+    "description": "Super-soldier and the first Avenger, wielding his iconic shield."
+  },
+  {
+    "real_name": "Thor Odinson",
+    "nickname": "Thor",
+    "description": "God of Thunder, wielder of Mjolnir, and prince of Asgard."
+  },
+  {
+    "real_name": "Bruce Banner",
+    "nickname": "Hulk",
+    "description": "Scientist exposed to gamma radiation, turning into a green-skinned behemoth when enraged."
+  },
+  {
+    "real_name": "Natasha Romanoff",
+    "nickname": "Black Widow",
+    "description": "Master spy, assassin, and skilled hand-to-hand combatant."
+  },
+  {
+    "real_name": "Clint Barton",
+    "nickname": "Hawkeye",
+    "description": "Master archer and marksman with exceptional skills in hand-to-hand combat."
+  },
+  {
+    "real_name": "Wanda Maximoff",
+    "nickname": "Scarlet Witch",
+    "description": "Reality-warping mutant with powerful magical abilities."
+  },
+  {
+    "real_name": "Vision",
+    "nickname": "Vision",
+    "description": "Synthetic android with superhuman strength, density manipulation, and energy projection."
+  },
+  {
+    "real_name": "James Rhodes",
+    "nickname": "War Machine",
+    "description": "Military officer and armored superhero with advanced weaponry."
+  },
+  {
+    "real_name": "T'Challa",
+    "nickname": "Black Panther",
+    "description": "King of Wakanda, skilled warrior, and wearer of the Black Panther suit."
+  }
+]

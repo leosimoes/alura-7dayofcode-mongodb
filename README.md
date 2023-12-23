@@ -21,9 +21,9 @@ build a Marvel characters API with a full standalone REST backend in Node.js on 
 4. Create the **index.js** file with the content:
 
 ```javascript
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require('express');
+const app = express();
+const port = 3000;
 
 app.get('/', (req, res) => {
      res.send('Hello World!');
@@ -45,6 +45,56 @@ app.listen(port, () => {
 8. Run MongoDB Compass and connect:
 
 ![Image-05-MongoDbCompass](/images/Image-05-MongoDbCompass.jpg)
+
+
+## Day 2
+
+9. Create the `my_marvel_database` database in MongoDB Compass:
+
+![Image-06-MongoDbCompass-CreateDatabse](/images/Image-06-MongoDbCompass-CreateDatabse.jpg)
+
+10. Add data manually to the database:
+- Generate data with fields "real_name", "nickname", "description" and save them in **data/avengers.json**;
+- Import data from the file to the database in MongoDB Compass:
+
+![Image-07-MongoDbCompass-ImportJson](/images/Image-07-MongoDbCompass-ImportJson.jpg)
+
+11. Install mongoose in the project:
+- In the terminal, type `npm install mongoose`;
+- Add the code in **index.js**:
+```javascript
+const connection_url = 'mongodb://localhost:27017/my_marvel_database';
+
+mongoose.connect(connection_url);
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Error connecting to MongoDB:'));
+db.once('open', () => {
+     console.log('Successful connection to MongoDB!');
+});
+
+const Character = mongoose.model('characters', {
+     real_name: String,
+     nickname: String,
+     description: String
+});
+
+app.get('/avengers/', async (req, res) => {
+     try {
+         const avengers = await Character.find();
+         res.json(avengers);
+     } catch (error) {
+         console.error(error);
+         res.status(500).json({ error: 'Error getting characters' });
+     }
+});
+```
+
+12. Test the application
+- Run the application through the terminal with `npm start`;
+- Access `http://localhost:3000/avengers` through the browser;
+
+![Image-08-AvengersRouteJSON](/images/Image-08-AvengersRouteJSON.jpg)
 
 
 ## References
