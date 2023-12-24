@@ -19,6 +19,8 @@ const Character = mongoose.model('characters', {
     description: String
 });
 
+app.use(express.json());
+
 app.get('/', (req, res) => {
     res.send('Application running...');
 });
@@ -29,7 +31,45 @@ app.get('/avengers/', async (req, res) => {
         res.json(avengers);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Erro ao obter personagens' });
+        res.status(500).json({ error: 'Error getting characters!' });
+    }
+});
+
+app.get('/avengers/:id/', async (req, res) => {
+    try {
+        const character = await Character.findById(req.params.id);
+
+        if (!character) {
+            return res.status(404).json({ error: 'Character not found!' });
+        }
+
+        res.json(character);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error getting character by ID!' });
+    }
+});
+
+app.post('/avengers/', async (req, res) => {
+    try {
+        const { real_name, nickname, description } = req.body;
+
+        if (!real_name || !nickname || !description) {
+            return res.status(400).json({ error: 'All fields are mandatory.' });
+        }
+
+        const newCharacter = new Character({
+            real_name,
+            nickname,
+            description
+        });
+
+        const savedCharacter = await newCharacter.save();
+
+        res.status(201).json(savedCharacter);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error creating a new character!' });
     }
 });
 

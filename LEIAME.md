@@ -21,9 +21,9 @@ construir uma API de personagens da Marvel com um back-end REST standalone compl
 4. Criar o arquivo **index.js** com o conteúdo:
 
 ```javascript
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require('express');
+const app = express();
+const port = 3000;
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
@@ -63,6 +63,8 @@ app.listen(port, () => {
 - No terminal, digite `npm install mongoose`;
 - Adicione o código em **index.js**:
 ```javascript
+const mongoose = require('mongoose');
+
 const connection_url = 'mongodb://localhost:27017/my_marvel_database';
 
 mongoose.connect(connection_url);
@@ -85,7 +87,7 @@ app.get('/avengers/', async (req, res) => {
         res.json(avengers);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Erro ao obter personagens' });
+        res.status(500).json({ error: 'Error getting characters!' });
     }
 });
 ```
@@ -95,6 +97,63 @@ app.get('/avengers/', async (req, res) => {
 - Acessar `http://localhost:3000/avengers` pelo navegador;
 
 ![Image-08-AvengersRouteJSON](/images/Image-08-AvengersRouteJSON.jpg)
+
+
+## Dia 3
+
+13. Criar endpoint GET `/avengers/id`:
+- Adicionar o código em **index.js**:
+```javascript
+app.get('/avengers/:id/', async (req, res) => {
+    try {
+        const character = await Character.findById(req.params.id);
+
+        if (!character) {
+            return res.status(404).json({ error: 'Character not found!' });
+        }
+
+        res.json(character);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error getting character by ID!' });
+    }
+});
+```
+- Testar `http://localhost:3000/avengers/6586daaf0ca46f4ddfbc6654` pelo navegador:
+
+![Image-09-AvengersGetId-IronMan](/images/Image-09-AvengersGetId-IronMan.jpg)
+
+14. Criar endpoint POST `/avengers`:
+- Adicionar o código em **index.js**:
+```javascript
+app.use(express.json());
+
+app.post('/avengers/', async (req, res) => {
+    try {
+        const { real_name, nickname, description } = req.body;
+
+        if (!real_name || !nickname || !description) {
+            return res.status(400).json({ error: 'All fields are mandatory.' });
+        }
+
+        const newCharacter = new Character({
+            real_name,
+            nickname,
+            description
+        });
+
+        const savedCharacter = await newCharacter.save();
+
+        res.status(201).json(savedCharacter);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error creating a new character!' });
+    }
+});
+```
+- Testar o endpoint com Postman, inserindo um novo dado:
+
+![Image-10-AvengersPost-Spiderman](/images/Image-10-AvengersPost-Spiderman.jpg)
 
 
 ## Referências

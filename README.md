@@ -63,6 +63,8 @@ app.listen(port, () => {
 - In the terminal, type `npm install mongoose`;
 - Add the code in **index.js**:
 ```javascript
+const mongoose = require('mongoose');
+
 const connection_url = 'mongodb://localhost:27017/my_marvel_database';
 
 mongoose.connect(connection_url);
@@ -85,7 +87,7 @@ app.get('/avengers/', async (req, res) => {
          res.json(avengers);
      } catch (error) {
          console.error(error);
-         res.status(500).json({ error: 'Error getting characters' });
+         res.status(500).json({ error: 'Error getting characters!' });
      }
 });
 ```
@@ -95,6 +97,63 @@ app.get('/avengers/', async (req, res) => {
 - Access `http://localhost:3000/avengers` through the browser;
 
 ![Image-08-AvengersRouteJSON](/images/Image-08-AvengersRouteJSON.jpg)
+
+
+## Day 3
+
+13. Create GET `/avengers/id` endpoint:
+- Add the code to **index.js**:
+```javascript
+app.get('/avengers/:id/', async (req, res) => {
+    try {
+        const character = await Character.findById(req.params.id);
+
+        if (!character) {
+            return res.status(404).json({ error: 'Character not found!' });
+        }
+
+        res.json(character);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error getting character by ID!' });
+    }
+});
+```
+- Test `http://localhost:3000/avengers/6586daaf0ca46f4ddfbc6654` through the browser:
+
+![Image-09-AvengersGetId-IronMan](/images/Image-09-AvengersGetId-IronMan.jpg)
+
+14. Create POST endpoint `/avengers`
+- Add the code to **index.js**:
+```javascript
+app.use(express.json());
+
+app.post('/avengers/', async (req, res) => {
+    try {
+        const { real_name, nickname, description } = req.body;
+
+        if (!real_name || !nickname || !description) {
+            return res.status(400).json({ error: 'All fields are mandatory.' });
+        }
+
+        const newCharacter = new Character({
+            real_name,
+            nickname,
+            description
+        });
+
+        const savedCharacter = await newCharacter.save();
+
+        res.status(201).json(savedCharacter);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error creating a new character!' });
+    }
+});
+```
+- Test the endpoint with Postman, inserting new data:
+
+![Image-10-AvengersPost-Spiderman](/images/Image-10-AvengersPost-Spiderman.jpg)
 
 
 ## References
