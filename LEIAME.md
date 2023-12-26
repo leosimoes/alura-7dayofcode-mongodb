@@ -101,7 +101,7 @@ app.get('/avengers/', async (req, res) => {
 
 ## Dia 3
 
-13. Criar endpoint GET `/avengers/id`:
+13. Criar endpoint GET `/avengers/:id`:
 - Adicionar o código em **index.js**:
 ```javascript
 app.get('/avengers/:id/', async (req, res) => {
@@ -174,6 +174,82 @@ if (hasAdditionalAttributes) {
 ```
 
 ![Image-12-Post-Thanos](/images/Image-12-Post-Thanos.jpg)
+
+
+## Dia 5
+
+16. Remover o atributo `_id` do retorno do endpoint GET `/avengers/`:
+```javascript
+const avengers = await Character.find({}, { _id: 0 });
+```
+![Image-13-AvengersRouteJSON-v2](/images/Image-13-AvengersRouteJSON-v2.jpg)
+
+17. Criar endpoint GET `/avengers/nickname/:nickname`:
+- Os objetos retornados não devem ter `_id`:
+```javascript
+const avengerWithoutId = avenger.toObject();
+delete avengerWithoutId._id;
+```
+- Adicionar o código:
+```javascript
+app.get('/avengers/nickname/:nickname', async (req, res) => {
+    try {
+        const { nickname } = req.params;
+        const decodedNickname = decodeURIComponent(nickname); // Decodifica o valor
+
+        const avenger = await Character.findOne({ nickname: decodedNickname });
+
+        if (!avenger) {
+            return res.status(404).json({ error: 'Avenger not found' });
+        }
+
+        const avengerWithoutId = avenger.toObject();
+        delete avengerWithoutId._id;
+
+        res.json(avengerWithoutId);
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ error: 'Error getting Avenger by nickname' });
+    }
+});
+```
+
+- Testar com o Postman:
+
+![Image-14-AvengersGetNickname-CaptainAmerica](/images/Image-14-AvengersGetNickname-CaptainAmerica.jpg)
+
+18. Criar endpoint GET `/avengers/realname/:realname`:
+- Os objetos retornados não devem ter `_id`;
+```javascript
+const avengerWithoutId = avenger.toObject();
+delete avengerWithoutId._id;
+```
+- Adicionar o código:
+```javascript
+app.get('/avengers/realname/:realname', async (req, res) => {
+    try {
+        const { realname } = req.params;
+        const decodedNickname = decodeURIComponent(realname); // Decodifica o valor
+
+        const avenger = await Character.findOne({ real_name: decodedNickname });
+
+        if (!avenger) {
+            return res.status(404).json({ error: 'Avenger not found!' });
+        }
+
+        const avengerWithoutId = avenger.toObject();
+        delete avengerWithoutId._id;
+
+        res.json(avengerWithoutId);
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ error: 'Error getting Avenger by nickname!' });
+    }
+});
+```
+- Testar com o Postman:
+
+![Image-15-AvengersGetRealName-TChalla](/images/Image-15-AvengersGetRealName-TChalla.jpg)
 
 
 ## Referências

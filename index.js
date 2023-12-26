@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
 
 app.get('/avengers/', async (req, res) => {
     try {
-        const avengers = await Character.find();
+        const avengers = await Character.find({}, { _id: 0 });
         res.json(avengers);
     } catch (error) {
         console.error(error);
@@ -47,6 +47,48 @@ app.get('/avengers/:id/', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error getting character by ID!' });
+    }
+});
+
+app.get('/avengers/nickname/:nickname', async (req, res) => {
+    try {
+        const { nickname } = req.params;
+        const decodedNickname = decodeURIComponent(nickname); // Decodifica o valor
+
+        const avenger = await Character.findOne({ nickname: decodedNickname });
+
+        if (!avenger) {
+            return res.status(404).json({ error: 'Avenger not found' });
+        }
+
+        const avengerWithoutId = avenger.toObject();
+        delete avengerWithoutId._id;
+
+        res.json(avengerWithoutId);
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ error: 'Error getting Avenger by nickname' });
+    }
+});
+
+app.get('/avengers/realname/:realname', async (req, res) => {
+    try {
+        const { realname } = req.params;
+        const decodedNickname = decodeURIComponent(realname); // Decodifica o valor
+
+        const avenger = await Character.findOne({ real_name: decodedNickname });
+
+        if (!avenger) {
+            return res.status(404).json({ error: 'Avenger not found!' });
+        }
+
+        const avengerWithoutId = avenger.toObject();
+        delete avengerWithoutId._id;
+
+        res.json(avengerWithoutId);
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ error: 'Error getting Avenger by nickname!' });
     }
 });
 
