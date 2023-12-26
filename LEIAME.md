@@ -252,6 +252,59 @@ app.get('/avengers/realname/:realname', async (req, res) => {
 ![Image-15-AvengersGetRealName-TChalla](/images/Image-15-AvengersGetRealName-TChalla.jpg)
 
 
+## Dia 6
+
+19. Criar endpoint DELETE `/avengers/nickname/:nickname`:
+- Adicionar o código:
+```javascript
+app.delete('/avengers/nickname/:nickname', async (req, res) => {
+    try {
+        const { nickname } = req.params;
+        const decodedNickname = decodeURIComponent(nickname);
+
+        const result = await Character.deleteOne({ nickname: decodedNickname });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: 'Avenger not found' });
+        }
+
+        res.json({ message: 'Avenger deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error deleting Avenger by nickname' });
+    }
+});
+```
+- Testar com o Postman:
+
+![Image-16-AvengersDelNickname-WarMachine](/images/Image-16-AvengersDelNickname-WarMachine.jpg)
+
+20. Criar endpoint DELETE `/avengers/realname/:realname`:
+- Adicionar o código:
+```javascript
+app.delete('/avengers/real_name/:real_name', async (req, res) => {
+    try {
+        const { real_name } = req.params;
+        const decodedRealName = decodeURIComponent(real_name);
+
+        const result = await Character.deleteOne({ real_name: decodedRealName });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: 'Avenger not found' });
+        }
+
+        res.json({ message: 'Avenger deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error deleting Avenger by real_name' });
+    }
+});
+```
+- Testar com o Postman:
+
+![Image-17-AvengersDelRealName-PeterParker](/images/Image-17-AvengersDelRealName-PeterParker.jpg)
+
+
 ## Referências
 
 Alura - 7 Days Of Code - MongoDB: https://7daysofcode.io/matricula/mongodb

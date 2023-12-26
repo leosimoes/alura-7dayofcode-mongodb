@@ -121,6 +121,42 @@ app.post('/avengers/', async (req, res) => {
     }
 });
 
+app.delete('/avengers/nickname/:nickname', async (req, res) => {
+    try {
+        const { nickname } = req.params;
+        const decodedNickname = decodeURIComponent(nickname);
+
+        const result = await Character.deleteOne({ nickname: decodedNickname });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: 'Avenger not found' });
+        }
+
+        res.json({ message: 'Avenger deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error deleting Avenger by nickname' });
+    }
+});
+
+app.delete('/avengers/real_name/:real_name', async (req, res) => {
+    try {
+        const { real_name } = req.params;
+        const decodedRealName = decodeURIComponent(real_name);
+
+        const result = await Character.deleteOne({ real_name: decodedRealName });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: 'Avenger not found' });
+        }
+
+        res.json({ message: 'Avenger deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error deleting Avenger by real_name' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
