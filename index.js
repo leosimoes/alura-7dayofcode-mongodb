@@ -35,7 +35,7 @@ app.get('/avengers/', async (req, res) => {
     }
 });
 
-app.get('/avengers/:id/', async (req, res) => {
+app.get('/avengers/id/:id/', async (req, res) => {
     try {
         const character = await Character.findById(req.params.id);
 
@@ -89,6 +89,23 @@ app.get('/avengers/realname/:realname', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(400).json({ error: 'Error getting Avenger by nickname!' });
+    }
+});
+
+const ITEMS_PER_PAGE = 4; // Number of items per page
+
+app.get('/avengers/pages/', async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+
+        const startIndex = (page - 1) * ITEMS_PER_PAGE;
+
+        const avengers = await Character.find({}, { _id: 0 }).skip(startIndex).limit(ITEMS_PER_PAGE);
+
+        res.json(avengers);
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ error: 'Error getting characters!' });
     }
 });
 
@@ -154,6 +171,52 @@ app.delete('/avengers/real_name/:real_name', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error deleting Avenger by real_name' });
+    }
+});
+
+app.put('/avengers/nickname/:nickname', async (req, res) => {
+    try {
+        const { nickname } = req.params;
+        const decodedNickname = decodeURIComponent(nickname);
+
+        const { real_name, description } = req.body;
+
+        const result = await Character.updateOne(
+            { nickname: decodedNickname },
+            { $set: { real_name, description } }
+        );
+
+        if (result.n === 0) {
+            return res.status(404).json({ error: 'Avenger not found' });
+        }
+
+        res.json({ message: 'Avenger updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error updating Avenger by nickname' });
+    }
+});
+
+app.put('/avengers/real_name/:real_name', async (req, res) => {
+    try {
+        const { real_name } = req.params;
+        const decodedRealName = decodeURIComponent(real_name);
+
+        const { nickname, description } = req.body;
+
+        const result = await Character.updateOne(
+            { real_name: decodedRealName },
+            { $set: { nickname, description } }
+        );
+
+        if (result.n === 0) {
+            return res.status(404).json({ error: 'Avenger not found' });
+        }
+
+        res.json({ message: 'Avenger updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error updating Avenger by real_name' });
     }
 });
 

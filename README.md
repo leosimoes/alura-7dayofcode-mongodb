@@ -190,7 +190,7 @@ const avengers = await Character.find({}, { _id: 0 });
 const avengerWithoutId = avenger.toObject();
 delete avengerWithoutId._id;
 ```
-- Add the code:
+- Add the code to **index.js**:
 ```javascript
 app.get('/avengers/nickname/:nickname', async (req, res) => {
      try {
@@ -224,7 +224,7 @@ app.get('/avengers/nickname/:nickname', async (req, res) => {
 const avengerWithoutId = avenger.toObject();
 delete avengerWithoutId._id;
 ```
-- Add the code:
+- Add the code to **index.js**:
 ```javascript
 app.get('/avengers/realname/:realname', async (req, res) => {
      try {
@@ -255,7 +255,7 @@ app.get('/avengers/realname/:realname', async (req, res) => {
 ## Day 6
 
 19. Create DELETE `/avengers/nickname/:nickname` endpoint:
-- Add the code:
+- Add the code to **index.js**:
 ```javascript
 app.delete('/avengers/nickname/:nickname', async (req, res) => {
      try {
@@ -280,7 +280,7 @@ app.delete('/avengers/nickname/:nickname', async (req, res) => {
 ![Image-16-AvengersDelNickname-WarMachine](/images/Image-16-AvengersDelNickname-WarMachine.jpg)
 
 20. Create DELETE `/avengers/realname/:realname` endpoint:
-- Add the code:
+- Add the code to **index.js**:
 ```javascript
 app.delete('/avengers/real_name/:real_name', async (req, res) => {
      try {
@@ -303,6 +303,101 @@ app.delete('/avengers/real_name/:real_name', async (req, res) => {
 - Test with Postman:
 
 ![Image-17-AvengersDelRealName-PeterParker](/images/Image-17-AvengersDelRealName-PeterParker.jpg)
+
+
+## Day 7
+
+21. Create PUT endpoint `/avengers/nickname/:nickname`:
+- Add the code to **index.js**:
+```javascript
+app.put('/avengers/nickname/:nickname', async (req, res) => {
+     try {
+         const { nickname } = req.params;
+         const decodedNickname = decodeURIComponent(nickname);
+
+         const { real_name, description } = req.body;
+
+         const result = await Character.updateOne(
+             { nickname: decodedNickname },
+             { $set: { real_name, description } }
+         );
+
+         if (result.n === 0) {
+             return res.status(404).json({ error: 'Avenger not found' });
+         }
+
+         res.json({ message: 'Avenger updated successfully' });
+     } catch (error) {
+         console.error(error);
+         res.status(500).json({ error: 'Error updating Avenger by nickname' });
+     }
+});
+```
+- Test with Postman:
+
+![Image-18-AvengersPutNickname-BlackPanther](/images/Image-18-AvengersPutNickname-BlackPanther.jpg)
+
+22. Create PUT endpoint `/avengers/realname/:realname`:
+- Add the code to **index.js**:
+```javascript
+app.put('/avengers/real_name/:real_name', async (req, res) => {
+     try {
+         const { real_name } = req.params;
+         const decodedRealName = decodeURIComponent(real_name);
+
+         const { nickname, description } = req.body;
+
+         const result = await Character.updateOne(
+             { real_name: decodedRealName },
+             { $set: { nickname, description } }
+         );
+
+         if (result.n === 0) {
+             return res.status(404).json({ error: 'Avenger not found' });
+         }
+
+         res.json({ message: 'Avenger updated successfully' });
+     } catch (error) {
+         console.error(error);
+         res.status(500).json({ error: 'Error updating Avenger by real_name' });
+     }
+});
+
+```
+- Test with Postman:
+
+![Image-19-AvengersPutRealName-ClintBarton](/images/Image-19-AvengersPutRealName-ClintBarton.jpg)
+
+23. Create GET endpoint `/avengers/pages`:
+- Add the code to **index.js**:
+```javascript
+const ITEMS_PER_PAGE = 4; // Number of items per page
+
+app.get('/avengers/pages/', async (req, res) => {
+     try {
+         const page = parseInt(req.query.page) || 1;
+
+         const startIndex = (page - 1) * ITEMS_PER_PAGE;
+
+         const avengers = await Character.find({}, { _id: 0 }).skip(startIndex).limit(ITEMS_PER_PAGE);
+
+         res.json(avengers);
+     } catch (error) {
+         console.error(error);
+         res.status(400).json({ error: 'Error getting characters!' });
+     }
+});
+```
+- Change the search route by id from `/avengers/:id/` to `/avengers/id/:id/`;
+- Test searches for pages with the browser (or Postman):
+
+![Image-20-AvengersRouteJSON-Page1](/images/Image-20-AvengersRouteJSON-Page1.jpg)
+
+![Image-21-AvengersRouteJSON-Page2](/images/Image-21-AvengersRouteJSON-Page2.jpg)
+
+![Image-22-AvengersRouteJSON-Page3](/images/Image-22-AvengersRouteJSON-Page3.jpg)
+
+![Image-23-AvengersRouteJSON-Page4](/images/Image-23-AvengersRouteJSON-Page4.jpg)
 
 
 ## References
