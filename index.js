@@ -54,6 +54,12 @@ app.post('/avengers/', async (req, res) => {
     try {
         const { real_name, nickname, description } = req.body;
 
+        const hasAdditionalAttributes = Object.keys(req.body).some(attribute => !['real_name', 'nickname', 'description'].includes(attribute));
+
+        if (hasAdditionalAttributes) {
+            return res.status(400).json({ error: 'Only "real_name", "nickname", and "description" are allowed.' });
+        }
+
         if (!real_name || !nickname || !description) {
             return res.status(400).json({ error: 'All fields are mandatory.' });
         }
@@ -69,7 +75,7 @@ app.post('/avengers/', async (req, res) => {
         res.status(201).json(savedCharacter);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error creating a new character!' });
+        res.status(400).json({ error: 'Error creating a new character!' });
     }
 });
 

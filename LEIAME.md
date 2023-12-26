@@ -147,13 +147,33 @@ app.post('/avengers/', async (req, res) => {
         res.status(201).json(savedCharacter);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error creating a new character!' });
+        res.status(400).json({ error: 'Error creating a new character!' });
     }
 });
 ```
 - Testar o endpoint com Postman, inserindo um novo dado:
 
 ![Image-10-AvengersPost-Spiderman](/images/Image-10-AvengersPost-Spiderman.jpg)
+
+
+## Dia 4
+
+15. Adicionar validação do endpoint POST `/avengers`:
+- Anteriormente já validava se os dados possuiam todos os 3 atributos requeridos:
+
+![Image-11-Post-Ultron](/images/Image-11-Post-Ultron.jpg)
+
+- Verificar se os dados não possuem nenhum atributo extra:
+
+```javascript
+const hasAdditionalAttributes = Object.keys(req.body).some(attribute => !['real_name', 'nickname', 'description'].includes(attribute));
+
+if (hasAdditionalAttributes) {
+    return res.status(400).json({ error: 'Only "real_name", "nickname", and "description" are allowed.' });
+}
+```
+
+![Image-12-Post-Thanos](/images/Image-12-Post-Thanos.jpg)
 
 
 ## Referências
